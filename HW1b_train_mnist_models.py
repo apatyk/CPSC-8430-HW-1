@@ -15,35 +15,22 @@ from torchvision import datasets, transforms
 from HW1b_mnist_models import epochs, img_batch_size, learning_rate, momentum
 from HW1b_mnist_models import ShallowCNN, ModerateCNN, DeepCNN
 
-def train(model, data_loader, epochs):
-    optimizer = optim.SGD(model.parameters(), lr=learning_rate, momentum=momentum) # stochastic gradient descent
-    loss_func = nn.CrossEntropyLoss()   # Cross entropy categorical loss function
-    model.zero_grad()
-    model.train()
+def train(model, data_loader):   
+    model.train() 
+    training_loss = 0.0
 
-    overall_loss = []
-    start_time = time.time()
-    for epoch in range(epochs):
-        epoch_loss = 0.0
-        for data, target in data_loader:
-            optimizer.zero_grad()
-            output = model(data)
-            loss = loss_func(output, target)
-            loss.backward()
-            optimizer.step()
-            epoch_loss += loss.item()
-        epoch_loss /= len(data_loader)
-        overall_loss.append(epoch_loss)
-        if epoch % (epochs/10) == (epochs/10)-1: # print updates 10 times
-            print(f'Epoch: {epoch+1}/{epochs} \tLoss: {epoch_loss:.6f}', flush=True)
-    total_time = (time.time() - start_time)
-    print(f'Training time: {total_time//60:.0f} min {total_time%60:.2f} s', flush=True)
+    for data, target in data_loader:
+      optimizer.zero_grad()
+      output = model(data)
+      loss = loss_func(output, target)
+      loss.backward()
+      optimizer.step()
+      training_loss += loss.item()
+    training_loss /= len(data_loader)
 
-    return overall_loss
+    return training_loss
 
 def test(model, data_loader):
-    loss_func = nn.CrossEntropyLoss()   # Cross entropy categorical loss function
-
     model.eval()
     testing_loss = 0.0
     correct = 0
@@ -58,7 +45,9 @@ def test(model, data_loader):
     total = len(data_loader.dataset)
     testing_loss /= total
     testing_acc = correct / total * 100
-    print(f'Accuracy: {correct}/{total} ({testing_acc:.2f}%)\tLoss: {testing_loss:.6f}', flush=True)
+    #print(f'Accuracy: {correct}/{total} ({testing_acc:.2f}%)\tLoss: {testing_loss:.6f}', flush=True)
+
+    return testing_acc
 
 ## -------------
 ## Create models
@@ -91,28 +80,50 @@ testing_loader = torch.utils.data.DataLoader(testing_set, batch_size=img_batch_s
 
 print('Data ready.')
 
-## ---------------------------------------------------
-## Train models [est. time: 1.5 hours with 150 epochs]
-## ---------------------------------------------------
+## ----------------------------------------------------------
+## Train & test models [est. time: 1.5 hours with 150 epochs]
+## ----------------------------------------------------------
 
 training_loss = []
+training_acc = []
 
-# train each model and save results to .txt file
 for i in range(len(models)):
+    loss_arr = []
+    acc_arr = []
+
+    models[i].zero_grad()
+    optimizer = optim.SGD(models[i].parameters(), lr=learning_rate, momentum=momentum) # stochastic gradient descent
+    loss_func = nn.CrossEntropyLoss()   # cross entropy categorical loss function
+
     print(f'Training model {i}:')
-    loss_arr = train(models[i], training_loader, epochs)
+    start_time = time.time()
+
+    for epoch in range(epochs):
+      # train
+      model_loss = train(models[i], training_loader)
+      loss_arr.append(model_loss)
+      # test
+      model_acc = test(models[i], training_loader)
+      acc_arr.append(model_acc)
+      # print updates 10 times
+      if epoch % (epochs/10) == (epochs/10)-1: 
+        print(f'Epoch: {epoch+1}/{epochs} \tLoss: {model_loss:.6f} \tAccuracy: {model_acc:.2f}', flush=True)
+    
     training_loss.append(loss_arr)
+    training_acc.append(acc_arr)
+    total_time = (time.time() - start_time)
+    print(f'Training time: {total_time//60:.0f} min {total_time%60:.2f} s', flush=True)
     torch.save(models[i], f'mnist_models/model{i}.pt')
 
+# save results to .txt files
 np.savetxt('mnist_models/training_loss.txt', np.array(training_loss))
+np.savetxt('mnist_models/training_acc.txt', np.array(training_acc))
 
-## -----------
+## ----------------------------------------------------------
 ## Test models
-## -----------
+## ----------------------------------------------------------
 
-# test each model and save results to .txt file
-testing_loss = []
 for i in range(len(models)):
-    print(f'Testing model {i}:')
-    loss_arr = test(models[i], testing_loader)
-    testing_loss.append(loss_arr)
+  print(f'Testing model {i}:')
+  model_acc = test(models[i], testing_loader)
+  print(f'Accuracy: {model_acc:.6f}', flush=True)

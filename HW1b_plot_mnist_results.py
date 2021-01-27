@@ -28,8 +28,9 @@ for i in range(len(models)):
 
 # load data from previous training
 training_loss = np.loadtxt('mnist_models/training_loss.txt')
+training_acc = np.loadtxt('mnist_models/training_acc.txt')
 
-# plot loss over epochs
+# plot training loss over epochs
 for i in range(len(models)):
     plt.plot(np.arange(0, epochs), training_loss[i], color=colors[i], label=f'model{i}')
 plt.legend()
@@ -37,4 +38,13 @@ plt.xlabel('Epoch')
 plt.ylabel('Loss')
 plt.yscale('log')
 plt.savefig('mnist_models/training_loss_comparison.eps')
+plt.show()
+
+# plot training accuracy over epochs
+for i in range(len(models)):
+    plt.plot(np.arange(0, epochs), training_acc[i], color=colors[i], label=f'model{i}')
+plt.legend()
+plt.xlabel('Epoch')
+plt.ylabel('Accuracy')
+plt.savefig('mnist_models/training_acc_comparison.eps')
 plt.show()
