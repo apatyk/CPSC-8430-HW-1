@@ -126,4 +126,4 @@ np.savetxt('mnist_models/training_acc.txt', np.array(training_acc))
 for i in range(len(models)):
   print(f'Testing model {i}:')
   model_acc = test(models[i], testing_loader)
-  print(f'Accuracy: {model_acc:.6f}', flush=True)
+  print(f'Accuracy: {model_acc:.2f}', flush=True)
