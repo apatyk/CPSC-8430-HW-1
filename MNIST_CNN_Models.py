@@ -5,10 +5,9 @@
 
 import torch
 import torch.nn as nn
+import torch.optim as optim
 
 # hyperparameters
-epochs = 150
-img_batch_size = 32
 learning_rate = 0.01
 momentum = 0.9
 
@@ -19,7 +18,48 @@ pool_size = 2
 conv_sizes = [16, 32]
 fc_size = 20
 
-class ShallowCNN(nn.Module):
+# parent class for CNN models with training, testing methods
+class CNN(nn.Module):
+  def __init__(self):
+    super(CNN, self).__init__()
+
+  def train(self, data_loader):   
+    self.model.train() 
+    training_loss = 0.0
+    optimizer = optim.SGD(self.model.parameters(), lr=learning_rate, momentum=momentum) # stochastic gradient descent
+    loss_function = nn.CrossEntropyLoss()   # cross entropy categorical loss function
+
+    for data, target in data_loader:
+      optimizer.zero_grad()
+      output = self.model(data)
+      loss = loss_function(output, target)
+      loss.backward()
+      optimizer.step()
+      training_loss += loss.item()
+    training_loss /= len(data_loader)
+
+    return training_loss
+
+  def test(self, data_loader):
+    self.model.eval()
+    testing_loss = 0.0
+    correct = 0
+    loss_function = nn.CrossEntropyLoss()   # cross entropy categorical loss function
+
+    with torch.no_grad():
+        for data, target in data_loader:
+            output = self.model(data)
+            loss = loss_function(output, target)
+            testing_loss += loss.item()
+            _, predicted = torch.max(output.data, 1)
+            correct += (predicted == target).sum().item()
+    total = len(data_loader.dataset)
+    testing_loss /= total
+    testing_acc = correct / total * 100
+
+    return testing_acc
+
+class ShallowCNN(CNN):
     def __init__(self):
         super(ShallowCNN, self).__init__()
         self.model = nn.Sequential(
@@ -35,7 +75,7 @@ class ShallowCNN(nn.Module):
     def forward(self, x):
         return self.model(x)
 
-class ModerateCNN(nn.Module):
+class ModerateCNN(CNN):
     def __init__(self):
         super(ModerateCNN, self).__init__()
         self.model = nn.Sequential(
@@ -54,7 +94,7 @@ class ModerateCNN(nn.Module):
     def forward(self, x):
         return self.model(x)
 
-class DeepCNN(nn.Module):
+class DeepCNN(CNN):
     def __init__(self):
         super(DeepCNN, self).__init__()
         self.model = nn.Sequential(

@@ -3,19 +3,56 @@
 ### Adam Patyk
 ### CPSC 8430
 
+import time
 import torch
 import torch.nn as nn
+import torch.optim as optim
+
+## --------------------------------------------------------
+## DNN Model Definitions for Simulating Nonlinear Functions
+## --------------------------------------------------------
 
 # hyperparameters
-epochs = 10000
 input_size = 1
 output_size = 1
 shallow_hidden_size = 200
 mod_hidden_sizes = [12, 22]
 deep_hidden_size = 8
 
+# parent class for DNN models with training method
+class DNN(nn.Module):
+  def __init__(self):
+        super(DNN, self).__init__()
+
+  def train(self, data_loader, epochs):
+    optimizer = optim.Adam(self.model.parameters())  # use adaptive learning rate over stochastic gradient descent
+    loss_func = nn.MSELoss()                    # use mean-squared error loss function
+    self.model.zero_grad()
+    training_loss = []
+
+    start_time = time.time()
+    for epoch in range(epochs):
+        epoch_loss = 0.0
+        for datum in data_loader:
+            input, target = datum[0][0].reshape(-1), datum[0][1].reshape(-1)
+            optimizer.zero_grad()
+            output = self.model(input)
+            loss = loss_func(output, target)
+            loss.backward()
+            optimizer.step()
+            epoch_loss += loss.item()
+        epoch_loss /= len(data_loader)
+        training_loss.append(epoch_loss)
+        if epoch % (epochs/10) == (epochs/10)-1: # print updates 10 times
+            print(f'Epoch: {epoch+1}/{epochs} \tLoss: {epoch_loss:.6f}', flush=True)
+    
+    total_time = (time.time() - start_time)
+    print(f'Training time: {total_time//60:.0f} min {total_time%60:.2f} s')
+
+    return training_loss
+
 # Model 0
-class ShallowNetwork(nn.Module):
+class ShallowNetwork(DNN):
     def __init__(self):
         super(ShallowNetwork, self).__init__()
         self.model = nn.Sequential(
@@ -28,7 +65,7 @@ class ShallowNetwork(nn.Module):
         return self.model(x)
 
 # Model 1
-class ModerateNetwork(nn.Module):
+class ModerateNetwork(DNN):
     def __init__(self):
         super(ModerateNetwork, self).__init__()
         self.model = nn.Sequential(
@@ -45,7 +82,7 @@ class ModerateNetwork(nn.Module):
         return self.model(x)
 
 # Model 2
-class DeepNetwork(nn.Module):
+class DeepNetwork(DNN):
     def __init__(self):
         super(DeepNetwork, self).__init__()
         self.model = nn.Sequential(

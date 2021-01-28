@@ -7,47 +7,12 @@ import time
 import numpy as np
 import torch
 import torchvision
-import torch.nn as nn
-import torch.optim as optim
 from torchvision import datasets, transforms
-
 # model definitions and hyperparameters
-from MNIST_CNN_Models import epochs, img_batch_size, learning_rate, momentum
 from MNIST_CNN_Models import ShallowCNN, ModerateCNN, DeepCNN
 
-def train(model, data_loader):   
-    model.train() 
-    training_loss = 0.0
-
-    for data, target in data_loader:
-      optimizer.zero_grad()
-      output = model(data)
-      loss = loss_func(output, target)
-      loss.backward()
-      optimizer.step()
-      training_loss += loss.item()
-    training_loss /= len(data_loader)
-
-    return training_loss
-
-def test(model, data_loader):
-    model.eval()
-    testing_loss = 0.0
-    correct = 0
-
-    with torch.no_grad():
-        for data, target in data_loader:
-            output = model(data)
-            loss = loss_func(output, target)
-            testing_loss += loss.item()
-            _, predicted = torch.max(output.data, 1)
-            correct += (predicted == target).sum().item()
-    total = len(data_loader.dataset)
-    testing_loss /= total
-    testing_acc = correct / total * 100
-    #print(f'Accuracy: {correct}/{total} ({testing_acc:.2f}%)\tLoss: {testing_loss:.6f}', flush=True)
-
-    return testing_acc
+epochs = 150
+img_batch_size = 32
 
 ## -------------
 ## Create models
@@ -92,18 +57,16 @@ for i in range(len(models)):
     acc_arr = []
 
     models[i].zero_grad()
-    optimizer = optim.SGD(models[i].parameters(), lr=learning_rate, momentum=momentum) # stochastic gradient descent
-    loss_func = nn.CrossEntropyLoss()   # cross entropy categorical loss function
 
     print(f'Training model {i}:')
     start_time = time.time()
 
     for epoch in range(epochs):
       # train
-      model_loss = train(models[i], training_loader)
+      model_loss = models[i].train(training_loader)
       loss_arr.append(model_loss)
       # test
-      model_acc = test(models[i], training_loader)
+      model_acc = models[i].test(training_loader)
       acc_arr.append(model_acc)
       # print updates 10 times
       if epoch % (epochs/10) == (epochs/10)-1: 
@@ -125,5 +88,5 @@ np.savetxt('mnist_models/training_acc.txt', np.array(training_acc))
 
 for i in range(len(models)):
   print(f'Testing model {i}:')
-  model_acc = test(models[i], testing_loader)
+  model_acc = models[i].test(testing_loader)
   print(f'Accuracy: {model_acc:.2f}', flush=True)

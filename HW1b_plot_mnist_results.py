@@ -6,16 +6,15 @@
 import numpy as np
 import torch
 import matplotlib.pyplot as plt
-
 # model definitions
-from MNIST_CNN_Models import epochs
 from MNIST_CNN_Models import ShallowCNN, ModerateCNN, DeepCNN
+
+epochs = 150
+colors = ['tab:orange', 'tab:green', 'tab:purple']
 
 ## ------------
 ## Plot results
 ## ------------
-
-colors = ['tab:orange', 'tab:green', 'tab:purple']
 
 # load model parameters from previous training
 models = []
