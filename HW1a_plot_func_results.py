@@ -10,8 +10,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # model definitions
-from HW1a_func_models import epochs
-from HW1a_func_models import ShallowNetwork, ModerateNetwork, DeepNetwork
+from DNN_Models import epochs
+from DNN_Models import ShallowNetwork, ModerateNetwork, DeepNetwork
 
 # Torch dataset for function data (e^x * sin^2(3*pi*x))
 class FunctionDataset(Dataset):
@@ -79,7 +79,6 @@ for i in range(len(models)):
     plt.yscale('log')
     plt.savefig(f'func_models/loss_comparison_model{i}.eps')
     plt.show()
-
 
 # plot values from final model vs. ground truth function
 plt.plot(raw_data[:, 0], raw_data[:, 1], label=r'$e^xsin(\pi x)$')

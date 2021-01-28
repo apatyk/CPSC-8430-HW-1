@@ -12,8 +12,8 @@ import torch.optim as optim
 from torchvision import datasets, transforms
 
 # model definitions and hyperparameters
-from HW1b_mnist_models import epochs, img_batch_size, learning_rate, momentum
-from HW1b_mnist_models import ShallowCNN, ModerateCNN, DeepCNN
+from MNIST_CNN_Models import epochs, img_batch_size, learning_rate, momentum
+from MNIST_CNN_Models import ShallowCNN, ModerateCNN, DeepCNN
 
 def train(model, data_loader):   
     model.train() 

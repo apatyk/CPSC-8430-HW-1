@@ -8,8 +8,8 @@ import torch
 import matplotlib.pyplot as plt
 
 # model definitions
-from HW1b_mnist_models import epochs
-from HW1b_mnist_models import ShallowCNN, ModerateCNN, DeepCNN
+from MNIST_CNN_Models import epochs
+from MNIST_CNN_Models import ShallowCNN, ModerateCNN, DeepCNN
 
 ## ------------
 ## Plot results

@@ -12,8 +12,8 @@ import torch.optim as optim
 from torch.utils.data import DataLoader, Dataset
 
 # model definitions
-from HW1a_func_models import epochs
-from HW1a_func_models import ShallowNetwork, ModerateNetwork, DeepNetwork
+from DNN_Models import epochs
+from DNN_Models import ShallowNetwork, ModerateNetwork, DeepNetwork
 
 # Torch dataset for function data (e^x * sin^2(3*pi*x))
 class FunctionDataset(Dataset):
