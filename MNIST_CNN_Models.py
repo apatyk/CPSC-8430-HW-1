@@ -7,6 +7,10 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 
+## ---------------------------------------
+## CNN Model Definitions for MNIST Dataset
+## ---------------------------------------
+
 # hyperparameters
 learning_rate = 0.01
 momentum = 0.9
