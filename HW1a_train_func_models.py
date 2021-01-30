@@ -8,9 +8,9 @@ import numpy as np
 import torch
 from torch.utils.data import DataLoader, Dataset
 # model definitions
-from DNN_Models import ShallowNetwork, ModerateNetwork, DeepNetwork
+from common.DNN_Models import ShallowNetwork, ModerateNetwork, DeepNetwork
 # Torch dataset for function data
-from FunctionDataset import FunctionDataset
+from common.FunctionDataset import FunctionDataset
 
 epochs = 10000
 num_data_points = 100
@@ -66,7 +66,7 @@ for i in range(len(models)):
   training_loss.append(loss_arr)
   total_time = (time.time() - start_time)
   print(f'Training time: {total_time//60:.0f} min {total_time%60:.2f} s', flush=True)
-  torch.save(models[i].state_dict(), f'func_models/model{i}.pt')
+  torch.save(models[i].state_dict(), f'results/1/func_models/model{i}.pt')
 
 # save results to .txt file
-np.savetxt('func_models/training_loss.txt', np.array(training_loss))
+np.savetxt('results/1/func_models/training_loss.txt', np.array(training_loss))

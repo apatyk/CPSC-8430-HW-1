@@ -9,9 +9,9 @@ from torch.utils.data import Dataset
 import numpy as np
 import matplotlib.pyplot as plt
 # model definitions
-from DNN_Models import ShallowNetwork, ModerateNetwork, DeepNetwork
+from common.DNN_Models import ShallowNetwork, ModerateNetwork, DeepNetwork
 # Torch dataset for function data
-from FunctionDataset import FunctionDataset
+from common.FunctionDataset import FunctionDataset
 
 def inverse_standardize(data, mean, stddev):
     data = data * stddev + mean
@@ -32,11 +32,11 @@ models.append(ModerateNetwork())
 models.append(DeepNetwork())
 
 for i in range(len(models)):
-  saved_model = torch.load(f'func_models/model{i}.pt')
+  saved_model = torch.load(f'results/1/func_models/model{i}.pt')
   models[i].load_state_dict(saved_model)
 
 # load data from previous training
-training_loss = np.loadtxt('func_models/training_loss.txt')
+training_loss = np.loadtxt('results/1/func_models/training_loss.txt')
 
 # create 100 data points from function e^x * sin^2(3*pi*x) [0, 1]
 raw_data = FunctionDataset(100, 0, 1)
@@ -51,7 +51,7 @@ for i in range(len(models)):
     plt.xlabel('Epoch')
     plt.ylabel('Loss')
     plt.yscale('log')
-    plt.savefig(f'func_models/loss_comparison_model{i}.pdf')
+    plt.savefig(f'results/1/func_models/loss_comparison_model{i}.pdf')
     plt.show()
 
 # plot loss over epochs for all models
@@ -61,7 +61,7 @@ plt.legend()
 plt.xlabel('Epoch')
 plt.ylabel('Loss')
 plt.yscale('log')
-plt.savefig(f'func_models/loss_comparison.pdf')
+plt.savefig(f'results/1/func_models/loss_comparison.pdf')
 plt.show()
 
 # plot values from final model vs. ground truth function
@@ -77,5 +77,5 @@ for i in range(len(models)):
 plt.legend()
 plt.xlabel('x')
 plt.ylabel('y')
-plt.savefig('func_models/output_comparison.pdf')
+plt.savefig('results/1/func_models/output_comparison.pdf')
 plt.show()

@@ -9,7 +9,7 @@ import torch
 import torchvision
 from torchvision import datasets, transforms
 # model definitions and hyperparameters
-from MNIST_CNN_Models import ShallowCNN, ModerateCNN, DeepCNN
+from common.MNIST_CNN_Models import ShallowCNN, ModerateCNN, DeepCNN
 
 epochs = 150
 img_batch_size = 32
@@ -76,11 +76,11 @@ for i in range(len(models)):
   training_acc.append(acc_arr)
   total_time = (time.time() - start_time)
   print(f'Training time: {total_time//60:.0f} min {total_time%60:.2f} s', flush=True)
-  torch.save(models[i].state_dict(), f'mnist_models/model{i}.pt')
+  torch.save(models[i].state_dict(), f'results/1/mnist_models/model{i}.pt')
 
 # save results to .txt files
-np.savetxt('mnist_models/training_loss.txt', np.array(training_loss))
-np.savetxt('mnist_models/training_acc.txt', np.array(training_acc))
+np.savetxt('results/1/mnist_models/training_loss.txt', np.array(training_loss))
+np.savetxt('results/1/mnist_models/training_acc.txt', np.array(training_acc))
 
 ## ----------------------------------------------------------
 ## Test models

@@ -7,7 +7,7 @@ import numpy as np
 import torch
 import matplotlib.pyplot as plt
 # model definitions
-from MNIST_CNN_Models import ShallowCNN, ModerateCNN, DeepCNN
+from common.MNIST_CNN_Models import ShallowCNN, ModerateCNN, DeepCNN
 
 epochs = 150
 colors = ['tab:orange', 'tab:green', 'tab:purple']
@@ -23,12 +23,12 @@ models.append(ModerateCNN())
 models.append(DeepCNN())
 
 for i in range(len(models)):
-  saved_model = torch.load(f'mnist_models/model{i}.pt')
+  saved_model = torch.load(f'results/1/mnist_models/model{i}.pt')
   models[i].load_state_dict(saved_model)
 
 # load data from previous training
-training_loss = np.loadtxt('mnist_models/training_loss.txt')
-training_acc = np.loadtxt('mnist_models/training_acc.txt')
+training_loss = np.loadtxt('results/1/mnist_models/training_loss.txt')
+training_acc = np.loadtxt('results/1/mnist_models/training_acc.txt')
 
 # plot training loss over epochs
 for i in range(len(models)):
@@ -37,7 +37,7 @@ plt.legend()
 plt.xlabel('Epoch')
 plt.ylabel('Loss')
 plt.yscale('log')
-plt.savefig('mnist_models/training_loss_comparison.pdf')
+plt.savefig('results/1/mnist_models/training_loss_comparison.pdf')
 plt.show()
 
 # plot training accuracy over epochs
@@ -46,5 +46,5 @@ for i in range(len(models)):
 plt.legend()
 plt.xlabel('Epoch')
 plt.ylabel('Accuracy')
-plt.savefig('mnist_models/training_acc_comparison.pdf')
+plt.savefig('results/1/mnist_models/training_acc_comparison.pdf')
 plt.show()
