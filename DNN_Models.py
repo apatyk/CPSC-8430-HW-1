@@ -3,7 +3,6 @@
 ### Adam Patyk
 ### CPSC 8430
 
-import time
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -22,90 +21,81 @@ deep_hidden_size = 8
 # parent class for DNN models with training method
 class DNN(nn.Module):
   def __init__(self):
-        super(DNN, self).__init__()
+    super(DNN, self).__init__()
 
-  def train(self, data_loader, epochs):
+  def train(self, data_loader):
+    self.model.train()
+    training_loss = 0.0
     optimizer = optim.Adam(self.model.parameters())  # use adaptive learning rate over stochastic gradient descent
-    loss_func = nn.MSELoss()                    # use mean-squared error loss function
-    self.model.zero_grad()
-    training_loss = []
-
-    start_time = time.time()
-    for epoch in range(epochs):
-        epoch_loss = 0.0
-        for datum in data_loader:
-            input, target = datum[0][0].reshape(-1), datum[0][1].reshape(-1)
-            optimizer.zero_grad()
-            output = self.model(input)
-            loss = loss_func(output, target)
-            loss.backward()
-            optimizer.step()
-            epoch_loss += loss.item()
-        epoch_loss /= len(data_loader)
-        training_loss.append(epoch_loss)
-        if epoch % (epochs/10) == (epochs/10)-1: # print updates 10 times
-            print(f'Epoch: {epoch+1}/{epochs} \tLoss: {epoch_loss:.6f}', flush=True)
+    loss_function = nn.MSELoss()                    # use mean-squared error loss function
     
-    total_time = (time.time() - start_time)
-    print(f'Training time: {total_time//60:.0f} min {total_time%60:.2f} s')
+    for datum in data_loader:
+      input, target = datum[0][0].reshape(-1), datum[0][1].reshape(-1)
+      optimizer.zero_grad()
+      output = self.model(input)
+      loss = loss_function(output, target)
+      loss.backward()
+      optimizer.step()
+      training_loss += loss.item()
+    training_loss /= len(data_loader)
 
     return training_loss
 
 # Model 0
 class ShallowNetwork(DNN):
-    def __init__(self):
-        super(ShallowNetwork, self).__init__()
-        self.model = nn.Sequential(
-            nn.Linear(input_size, shallow_hidden_size),
-            nn.ReLU(),
-            nn.Linear(shallow_hidden_size, output_size),
-        )
+  def __init__(self):
+    super(ShallowNetwork, self).__init__()
+    self.model = nn.Sequential(
+      nn.Linear(input_size, shallow_hidden_size),
+      nn.ReLU(),
+      nn.Linear(shallow_hidden_size, output_size),
+    )
 
-    def forward(self, x):
-        return self.model(x)
+  def forward(self, x):
+    return self.model(x)
 
 # Model 1
 class ModerateNetwork(DNN):
-    def __init__(self):
-        super(ModerateNetwork, self).__init__()
-        self.model = nn.Sequential(
-            nn.Linear(input_size, mod_hidden_sizes[0]),
-            nn.ReLU(),
-            nn.Linear(mod_hidden_sizes[0], mod_hidden_sizes[1]),
-            nn.ReLU(),
-            nn.Linear(mod_hidden_sizes[1], mod_hidden_sizes[0]),
-            nn.ReLU(),
-            nn.Linear(mod_hidden_sizes[0], output_size),
-        )
+  def __init__(self):
+    super(ModerateNetwork, self).__init__()
+    self.model = nn.Sequential(
+      nn.Linear(input_size, mod_hidden_sizes[0]),
+      nn.ReLU(),
+      nn.Linear(mod_hidden_sizes[0], mod_hidden_sizes[1]),
+      nn.ReLU(),
+      nn.Linear(mod_hidden_sizes[1], mod_hidden_sizes[0]),
+      nn.ReLU(),
+      nn.Linear(mod_hidden_sizes[0], output_size),
+    )
 
-    def forward(self, x):
-        return self.model(x)
+  def forward(self, x):
+    return self.model(x)
 
 # Model 2
 class DeepNetwork(DNN):
-    def __init__(self):
-        super(DeepNetwork, self).__init__()
-        self.model = nn.Sequential(
-            nn.Linear(input_size, deep_hidden_size),
-            nn.ReLU(),
-            nn.Linear(deep_hidden_size, deep_hidden_size),
-            nn.ReLU(),
-            nn.Linear(deep_hidden_size, deep_hidden_size),
-            nn.ReLU(),
-            nn.Linear(deep_hidden_size, deep_hidden_size),
-            nn.ReLU(),
-            nn.Linear(deep_hidden_size, deep_hidden_size),
-            nn.ReLU(),
-            nn.Linear(deep_hidden_size, deep_hidden_size),
-            nn.ReLU(),
-            nn.Linear(deep_hidden_size, deep_hidden_size),
-            nn.ReLU(),
-            nn.Linear(deep_hidden_size, deep_hidden_size),
-            nn.ReLU(),
-            nn.Linear(deep_hidden_size, deep_hidden_size),
-            nn.ReLU(),
-            nn.Linear(deep_hidden_size, output_size),
-        )
+  def __init__(self):
+    super(DeepNetwork, self).__init__()
+    self.model = nn.Sequential(
+      nn.Linear(input_size, deep_hidden_size),
+      nn.ReLU(),
+      nn.Linear(deep_hidden_size, deep_hidden_size),
+      nn.ReLU(),
+      nn.Linear(deep_hidden_size, deep_hidden_size),
+      nn.ReLU(),
+      nn.Linear(deep_hidden_size, deep_hidden_size),
+      nn.ReLU(),
+      nn.Linear(deep_hidden_size, deep_hidden_size),
+      nn.ReLU(),
+      nn.Linear(deep_hidden_size, deep_hidden_size),
+      nn.ReLU(),
+      nn.Linear(deep_hidden_size, deep_hidden_size),
+      nn.ReLU(),
+      nn.Linear(deep_hidden_size, deep_hidden_size),
+      nn.ReLU(),
+      nn.Linear(deep_hidden_size, deep_hidden_size),
+      nn.ReLU(),
+      nn.Linear(deep_hidden_size, output_size),
+    )
 
-    def forward(self, x):
-        return self.model(x)
+  def forward(self, x):
+    return self.model(x)

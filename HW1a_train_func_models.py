@@ -3,6 +3,7 @@
 ### Adam Patyk
 ### CPSC 8430
 
+import time
 import numpy as np
 import torch
 from torch.utils.data import DataLoader, Dataset
@@ -26,8 +27,8 @@ models.append(ModerateNetwork())
 models.append(DeepNetwork())
 
 for i in range(len(models)):
-    num_params = sum(p.numel() for p in models[i].parameters())
-    print(f'Model {i} parameters: {num_params}')
+  num_params = sum(p.numel() for p in models[i].parameters())
+  print(f'Model {i} parameters: {num_params}')
 
 ## ------------------------
 ## Create data for training
@@ -47,11 +48,25 @@ print('Data ready.')
 ## Train models [est. time: ~1 hour with 10,000 epochs]
 ## ----------------------------------------------------
 
-# train each model and save results to .txt file
+# train each model
 training_loss = []
 for i in range(len(models)):
-    print(f'Training model {i}:')
-    loss_arr = models[i].train(training_loader, epochs)
-    training_loss.append(loss_arr)
-    torch.save(models[i].state_dict(), f'func_models/model{i}.pt')
+  loss_arr = []
+  models[i].zero_grad()
+
+  print(f'Training model {i}:')
+  start_time = time.time()
+
+  for epoch in range(epochs):
+    model_loss = models[i].train(training_loader)
+    loss_arr.append(model_loss)
+    if epoch % (epochs/10) == (epochs/10)-1: # print updates 10 times
+      print(f'Epoch: {epoch+1}/{epochs} \tLoss: {model_loss:.6f}', flush=True)
+
+  training_loss.append(loss_arr)
+  total_time = (time.time() - start_time)
+  print(f'Training time: {total_time//60:.0f} min {total_time%60:.2f} s', flush=True)
+  torch.save(models[i].state_dict(), f'func_models/model{i}.pt')
+
+# save results to .txt file
 np.savetxt('func_models/training_loss.txt', np.array(training_loss))
