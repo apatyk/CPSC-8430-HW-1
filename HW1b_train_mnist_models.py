@@ -53,30 +53,30 @@ training_loss = []
 training_acc = []
 
 for i in range(len(models)):
-    loss_arr = []
-    acc_arr = []
+  loss_arr = []
+  acc_arr = []
 
-    models[i].zero_grad()
+  models[i].zero_grad()
 
-    print(f'Training model {i}:')
-    start_time = time.time()
+  print(f'Training model {i}:')
+  start_time = time.time()
 
-    for epoch in range(epochs):
-      # train
-      model_loss = models[i].train(training_loader)
-      loss_arr.append(model_loss)
-      # test
-      model_acc = models[i].test(training_loader)
-      acc_arr.append(model_acc)
-      # print updates 10 times
-      if epoch % (epochs/10) == (epochs/10)-1: 
-        print(f'Epoch: {epoch+1}/{epochs} \tLoss: {model_loss:.6f} \tAccuracy: {model_acc:.2f}', flush=True)
-    
-    training_loss.append(loss_arr)
-    training_acc.append(acc_arr)
-    total_time = (time.time() - start_time)
-    print(f'Training time: {total_time//60:.0f} min {total_time%60:.2f} s', flush=True)
-    torch.save(models[i], f'mnist_models/model{i}.pt')
+  for epoch in range(epochs):
+    # train
+    model_loss = models[i].train(training_loader)
+    loss_arr.append(model_loss)
+    # test
+    model_acc = models[i].test(training_loader)
+    acc_arr.append(model_acc)
+    # print updates 10 times
+    if epoch % (epochs/10) == (epochs/10)-1: 
+      print(f'Epoch: {epoch+1}/{epochs} \tLoss: {model_loss:.6f} \tAccuracy: {model_acc:.2f}', flush=True)
+  
+  training_loss.append(loss_arr)
+  training_acc.append(acc_arr)
+  total_time = (time.time() - start_time)
+  print(f'Training time: {total_time//60:.0f} min {total_time%60:.2f} s', flush=True)
+  torch.save(models[i].state_dict(), f'mnist_models/model{i}.pt')
 
 # save results to .txt files
 np.savetxt('mnist_models/training_loss.txt', np.array(training_loss))

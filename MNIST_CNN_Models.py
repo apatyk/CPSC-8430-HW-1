@@ -51,12 +51,12 @@ class CNN(nn.Module):
     loss_function = nn.CrossEntropyLoss()   # cross entropy categorical loss function
 
     with torch.no_grad():
-        for data, target in data_loader:
-            output = self.model(data)
-            loss = loss_function(output, target)
-            testing_loss += loss.item()
-            _, predicted = torch.max(output.data, 1)
-            correct += (predicted == target).sum().item()
+      for data, target in data_loader:
+        output = self.model(data)
+        loss = loss_function(output, target)
+        testing_loss += loss.item()
+        _, predicted = torch.max(output.data, 1)
+        correct += (predicted == target).sum().item()
     total = len(data_loader.dataset)
     testing_loss /= total
     testing_acc = correct / total * 100
@@ -64,58 +64,58 @@ class CNN(nn.Module):
     return testing_acc
 
 class ShallowCNN(CNN):
-    def __init__(self):
-        super(ShallowCNN, self).__init__()
-        self.model = nn.Sequential(
-            nn.Conv2d(input_size, conv_sizes[0], kernel_size),
-            nn.MaxPool2d(pool_size, pool_size),
-            nn.ReLU(),
-            nn.Flatten(),
-            nn.Linear(2704, fc_size),
-            nn.ReLU(),
-            nn.Linear(fc_size, output_size)
-        )
+  def __init__(self):
+    super(ShallowCNN, self).__init__()
+    self.model = nn.Sequential(
+      nn.Conv2d(input_size, conv_sizes[0], kernel_size),
+      nn.MaxPool2d(pool_size, pool_size),
+      nn.ReLU(),
+      nn.Flatten(),
+      nn.Linear(2704, fc_size),
+      nn.ReLU(),
+      nn.Linear(fc_size, output_size)
+    )
 
-    def forward(self, x):
-        return self.model(x)
+  def forward(self, x):
+    return self.model(x)
 
 class ModerateCNN(CNN):
-    def __init__(self):
-        super(ModerateCNN, self).__init__()
-        self.model = nn.Sequential(
-            nn.Conv2d(input_size, conv_sizes[0], kernel_size),
-            nn.MaxPool2d(pool_size, pool_size),
-            nn.ReLU(),
-            nn.Conv2d(conv_sizes[0], conv_sizes[1], kernel_size),
-            nn.MaxPool2d(pool_size, pool_size),
-            nn.ReLU(),
-            nn.Flatten(),
-            nn.Linear(800, fc_size),
-            nn.ReLU(),
-            nn.Linear(fc_size, output_size)
-        )
+  def __init__(self):
+    super(ModerateCNN, self).__init__()
+    self.model = nn.Sequential(
+      nn.Conv2d(input_size, conv_sizes[0], kernel_size),
+      nn.MaxPool2d(pool_size, pool_size),
+      nn.ReLU(),
+      nn.Conv2d(conv_sizes[0], conv_sizes[1], kernel_size),
+      nn.MaxPool2d(pool_size, pool_size),
+      nn.ReLU(),
+      nn.Flatten(),
+      nn.Linear(800, fc_size),
+      nn.ReLU(),
+      nn.Linear(fc_size, output_size)
+    )
 
-    def forward(self, x):
-        return self.model(x)
+  def forward(self, x):
+    return self.model(x)
 
 class DeepCNN(CNN):
-    def __init__(self):
-        super(DeepCNN, self).__init__()
-        self.model = nn.Sequential(
-            nn.Conv2d(input_size, conv_sizes[0], kernel_size),
-            nn.MaxPool2d(pool_size, pool_size),
-            nn.ReLU(),
-            nn.Conv2d(conv_sizes[0], conv_sizes[1], kernel_size),
-            nn.MaxPool2d(pool_size, pool_size),
-            nn.ReLU(),
-            nn.Conv2d(conv_sizes[1], conv_sizes[1], kernel_size),
-            nn.MaxPool2d(pool_size, pool_size),
-            nn.ReLU(),
-            nn.Flatten(),
-            nn.Linear(32, fc_size),
-            nn.ReLU(),
-            nn.Linear(fc_size, output_size)
-        )
+  def __init__(self):
+    super(DeepCNN, self).__init__()
+    self.model = nn.Sequential(
+      nn.Conv2d(input_size, conv_sizes[0], kernel_size),
+      nn.MaxPool2d(pool_size, pool_size),
+      nn.ReLU(),
+      nn.Conv2d(conv_sizes[0], conv_sizes[1], kernel_size),
+      nn.MaxPool2d(pool_size, pool_size),
+      nn.ReLU(),
+      nn.Conv2d(conv_sizes[1], conv_sizes[1], kernel_size),
+      nn.MaxPool2d(pool_size, pool_size),
+      nn.ReLU(),
+      nn.Flatten(),
+      nn.Linear(32, fc_size),
+      nn.ReLU(),
+      nn.Linear(fc_size, output_size)
+    )
 
-    def forward(self, x):
-        return self.model(x)
+  def forward(self, x):
+    return self.model(x)

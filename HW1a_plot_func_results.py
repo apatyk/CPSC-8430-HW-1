@@ -51,7 +51,7 @@ for i in range(len(models)):
     plt.xlabel('Epoch')
     plt.ylabel('Loss')
     plt.yscale('log')
-    plt.savefig(f'func_models/loss_comparison_model{i}.eps')
+    plt.savefig(f'func_models/loss_comparison_model{i}.pdf')
     plt.show()
 
 # plot loss over epochs for all models
@@ -61,7 +61,7 @@ plt.legend()
 plt.xlabel('Epoch')
 plt.ylabel('Loss')
 plt.yscale('log')
-plt.savefig(f'func_models/loss_comparison.eps')
+plt.savefig(f'func_models/loss_comparison.pdf')
 plt.show()
 
 # plot values from final model vs. ground truth function
@@ -77,5 +77,5 @@ for i in range(len(models)):
 plt.legend()
 plt.xlabel('x')
 plt.ylabel('y')
-plt.savefig('func_models/output_comparison.eps')
+plt.savefig('func_models/output_comparison.pdf')
 plt.show()
