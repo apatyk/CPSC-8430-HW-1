@@ -10,7 +10,7 @@ from torchvision import datasets, transforms
 # model definitions and hyperparameters
 from common.MNIST_CNN_Models import ShallowCNN, ModerateCNN, DeepCNN
 
-epochs = 100
+epochs = 150
 img_batch_size = 32
 
 ## -------------
@@ -44,9 +44,9 @@ testing_loader = torch.utils.data.DataLoader(testing_set, batch_size=img_batch_s
 
 print('Data ready.')
 
-## ---------------------------------------------------------
-## Train & test models [est. time: ~3 hours with 100 epochs]
-## ---------------------------------------------------------
+## -----------------------------------------------------------
+## Train & test models [est. time: ~3.5 hours with 150 epochs]
+## -----------------------------------------------------------
 
 training_loss = []
 training_acc = []
