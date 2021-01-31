@@ -3,7 +3,6 @@
 ### Adam Patyk
 ### CPSC 8430
 
-import time
 import numpy as np
 import torch
 from torch.utils.data import DataLoader, Dataset
@@ -55,7 +54,6 @@ for i in range(len(models)):
   models[i].zero_grad()
 
   print(f'Training model {i}:')
-  start_time = time.time()
 
   for epoch in range(epochs):
     model_loss = models[i].train(training_loader)
@@ -64,8 +62,6 @@ for i in range(len(models)):
       print(f'Epoch: {epoch+1}/{epochs} \tLoss: {model_loss:.6f}', flush=True)
 
   training_loss.append(loss_arr)
-  total_time = (time.time() - start_time)
-  print(f'Training time: {total_time//60:.0f} min {total_time%60:.2f} s', flush=True)
   torch.save(models[i].state_dict(), f'results/1/func_models/model{i}.pt')
 
 # save results to .txt file
