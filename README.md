@@ -11,5 +11,7 @@ There is a Jupyter notebook for each separate problem on this assignment.
 Running these in order will produce the desired results. Or, the latest results used in the report can be seen here.
 
 `common` contains the model class definitions and dataset for creating data for my nonlinear function.
+
 `data` contains the MNIST dataset
+
 `results` contains subdirectories for each problem (`1`, `2`, and `3`) with the figures for each respectively
