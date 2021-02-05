@@ -10,7 +10,7 @@ There is a Jupyter notebook for each separate problem on this assignment.
 
 Running these in order will produce the desired results. Or, the latest results used in the report can be seen here.
 
-`common` contains the model class definitions and dataset for creating data for my nonlinear function.
+`common` contains the class definitions for the models and Pytorch Dataset for creating the data for my nonlinear function $e^x \cdot sin^2(3 \pi x)$.
 
 `data` contains the MNIST dataset
 
