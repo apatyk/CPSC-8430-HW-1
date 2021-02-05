@@ -3,6 +3,7 @@
 ### Adam Patyk
 ### CPSC 8430
 
+from collections import OrderedDict
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -19,9 +20,9 @@ mod_hidden_sizes = [12, 22]
 deep_hidden_size = 8
 
 # parent class for DNN models with training method
-class DNN(nn.Module):
+class _DNN(nn.Module):
   def __init__(self):
-    super(DNN, self).__init__()
+    super(_DNN, self).__init__()
 
   def train(self, data_loader):
     self.model.train()
@@ -42,7 +43,7 @@ class DNN(nn.Module):
     return training_loss
 
 # Model 0
-class ShallowNetwork(DNN):
+class ShallowNetwork(_DNN):
   def __init__(self):
     super(ShallowNetwork, self).__init__()
     self.model = nn.Sequential(
@@ -55,24 +56,25 @@ class ShallowNetwork(DNN):
     return self.model(x)
 
 # Model 1
-class ModerateNetwork(DNN):
+# OrderedDict needed for layer names for HW2a
+class ModerateNetwork(_DNN):
   def __init__(self):
     super(ModerateNetwork, self).__init__()
-    self.model = nn.Sequential(
-      nn.Linear(input_size, mod_hidden_sizes[0]),
-      nn.ReLU(),
-      nn.Linear(mod_hidden_sizes[0], mod_hidden_sizes[1]),
-      nn.ReLU(),
-      nn.Linear(mod_hidden_sizes[1], mod_hidden_sizes[0]),
-      nn.ReLU(),
-      nn.Linear(mod_hidden_sizes[0], output_size),
-    )
+    self.model = nn.Sequential(OrderedDict([
+      ('fc1', nn.Linear(input_size, mod_hidden_sizes[0])),
+      ('activ1', nn.ReLU()),
+      ('fc2', nn.Linear(mod_hidden_sizes[0], mod_hidden_sizes[1])),
+      ('activ2', nn.ReLU()),
+      ('fc3', nn.Linear(mod_hidden_sizes[1], mod_hidden_sizes[0])),
+      ('activ3', nn.ReLU()),
+      ('fc4', nn.Linear(mod_hidden_sizes[0], output_size)),
+    ]))
 
   def forward(self, x):
     return self.model(x)
 
 # Model 2
-class DeepNetwork(DNN):
+class DeepNetwork(_DNN):
   def __init__(self):
     super(DeepNetwork, self).__init__()
     self.model = nn.Sequential(

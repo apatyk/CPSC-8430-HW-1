@@ -23,9 +23,9 @@ conv_sizes = [16, 32]
 fc_size = 20
 
 # parent class for CNN models with training, testing methods
-class CNN(nn.Module):
+class _CNN(nn.Module):
   def __init__(self):
-    super(CNN, self).__init__()
+    super(_CNN, self).__init__()
 
   def train(self, data_loader):   
     self.model.train() 
@@ -63,7 +63,7 @@ class CNN(nn.Module):
 
     return testing_acc
 
-class ShallowCNN(CNN):
+class ShallowCNN(_CNN):
   def __init__(self):
     super(ShallowCNN, self).__init__()
     self.model = nn.Sequential(
@@ -79,7 +79,7 @@ class ShallowCNN(CNN):
   def forward(self, x):
     return self.model(x)
 
-class ModerateCNN(CNN):
+class ModerateCNN(_CNN):
   def __init__(self):
     super(ModerateCNN, self).__init__()
     self.model = nn.Sequential(
@@ -98,7 +98,7 @@ class ModerateCNN(CNN):
   def forward(self, x):
     return self.model(x)
 
-class DeepCNN(CNN):
+class DeepCNN(_CNN):
   def __init__(self):
     super(DeepCNN, self).__init__()
     self.model = nn.Sequential(
