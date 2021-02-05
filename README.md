@@ -1,6 +1,5 @@
 # CPSC-8430-HW-1
-### Adam Patyk
-### Spring 2021
+### Adam Patyk | Spring 2021
 
 ---
 
