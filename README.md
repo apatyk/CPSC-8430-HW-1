@@ -2,6 +2,8 @@
 ### Adam Patyk
 ### Spring 2021
 
+---
+
 There is a Jupyter notebook for each separate problem on this assignment.
 
 1. HW 1-1: HW1-1_Deep_vs_Shallow.ipynb
