@@ -1,5 +1,3 @@
-### HW 1-1: Deep vs. Shallow
-### Part 2: Train on actual problem
 ### Adam Patyk
 ### CPSC 8430
 
@@ -30,15 +28,13 @@ class _CNN(nn.Module):
   def train(self, data_loader):   
     self.model.train() 
     training_loss = 0.0
-    optimizer = optim.SGD(self.model.parameters(), lr=learning_rate, momentum=momentum) # stochastic gradient descent
-    loss_function = nn.CrossEntropyLoss()   # cross entropy categorical loss function
 
     for data, target in data_loader:
-      optimizer.zero_grad()
+      self.optimizer.zero_grad()
       output = self.model(data)
-      loss = loss_function(output, target)
+      loss = self.loss_function(output, target)
       loss.backward()
-      optimizer.step()
+      self.optimizer.step()
       training_loss += loss.item()
     training_loss /= len(data_loader)
 
@@ -47,21 +43,21 @@ class _CNN(nn.Module):
   def test(self, data_loader):
     self.model.eval()
     testing_loss = 0.0
+    total = 0
     correct = 0
-    loss_function = nn.CrossEntropyLoss()   # cross entropy categorical loss function
-
+    
     with torch.no_grad():
       for data, target in data_loader:
         output = self.model(data)
-        loss = loss_function(output, target)
+        loss = self.loss_function(output, target)
         testing_loss += loss.item()
         _, predicted = torch.max(output.data, 1)
+        total += target.size(0)
         correct += (predicted == target).sum().item()
-    total = len(data_loader.dataset)
     testing_loss /= total
     testing_acc = correct / total * 100
 
-    return testing_acc
+    return testing_acc, testing_loss
 
 class ShallowCNN(_CNN):
   def __init__(self):
@@ -75,6 +71,8 @@ class ShallowCNN(_CNN):
       nn.ReLU(),
       nn.Linear(fc_size, output_size)
     )
+    self.optimizer = optim.SGD(self.model.parameters(), lr=learning_rate, momentum=momentum) # stochastic gradient descent
+    self.loss_function = nn.CrossEntropyLoss()   # cross entropy categorical loss function
 
   def forward(self, x):
     return self.model(x)
@@ -94,6 +92,9 @@ class ModerateCNN(_CNN):
       nn.ReLU(),
       nn.Linear(fc_size, output_size)
     )
+    self.optimizer = optim.SGD(self.model.parameters(), lr=learning_rate, momentum=momentum) # stochastic gradient descent
+    self.loss_function = nn.CrossEntropyLoss()   # cross entropy categorical loss function
+
 
   def forward(self, x):
     return self.model(x)
@@ -116,6 +117,9 @@ class DeepCNN(_CNN):
       nn.ReLU(),
       nn.Linear(fc_size, output_size)
     )
+    self.optimizer = optim.SGD(self.model.parameters(), lr=learning_rate, momentum=momentum) # stochastic gradient descent
+    self.loss_function = nn.CrossEntropyLoss()   # cross entropy categorical loss function
+
 
   def forward(self, x):
     return self.model(x)

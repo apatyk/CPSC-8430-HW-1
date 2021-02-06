@@ -1,5 +1,3 @@
-### HW 1-1: Deep vs. Shallow
-### Part 1: Simulate a function
 ### Adam Patyk
 ### CPSC 8430
 
@@ -27,20 +25,36 @@ class _DNN(nn.Module):
   def train(self, data_loader):
     self.model.train()
     training_loss = 0.0
-    optimizer = optim.Adam(self.model.parameters())  # use adaptive learning rate over stochastic gradient descent
-    loss_function = nn.MSELoss()                    # use mean-squared error loss function
     
     for datum in data_loader:
       input, target = datum[0][0].reshape(-1), datum[0][1].reshape(-1)
-      optimizer.zero_grad()
+      self.optimizer.zero_grad()
       output = self.model(input)
-      loss = loss_function(output, target)
+      loss = self.loss_function(output, target)
       loss.backward()
-      optimizer.step()
+      self.optimizer.step()
       training_loss += loss.item()
     training_loss /= len(data_loader)
 
     return training_loss
+
+  def test(self, data_loader):
+    self.model.eval()
+    testing_loss = 0.0
+    correct = 0
+
+    with torch.no_grad():
+      for data, target in data_loader:
+        output = self.model(data)
+        loss = self.loss_function(output, target)
+        testing_loss += loss.item()
+        _, predicted = torch.max(output.data, 1)
+        correct += (predicted == target).sum().item()
+    total = len(data_loader.dataset)
+    testing_loss /= total
+    testing_acc = correct / total * 100
+
+    return testing_acc, testing_loss
 
 # Model 0
 class ShallowNetwork(_DNN):
@@ -51,6 +65,8 @@ class ShallowNetwork(_DNN):
       nn.ReLU(),
       nn.Linear(shallow_hidden_size, output_size),
     )
+    self.optimizer = optim.Adam(self.model.parameters())  # use adaptive learning rate over stochastic gradient descent
+    self.loss_function = nn.MSELoss()                    # use mean-squared error loss function
 
   def forward(self, x):
     return self.model(x)
@@ -69,6 +85,8 @@ class ModerateNetwork(_DNN):
       ('activ3', nn.ReLU()),
       ('fc4', nn.Linear(mod_hidden_sizes[0], output_size)),
     ]))
+    self.optimizer = optim.Adam(self.model.parameters())  # use adaptive learning rate over stochastic gradient descent
+    self.loss_function = nn.MSELoss()                    # use mean-squared error loss function
 
   def forward(self, x):
     return self.model(x)
@@ -98,6 +116,8 @@ class DeepNetwork(_DNN):
       nn.ReLU(),
       nn.Linear(deep_hidden_size, output_size),
     )
+    self.optimizer = optim.Adam(self.model.parameters())  # use adaptive learning rate over stochastic gradient descent
+    self.loss_function = nn.MSELoss()                    # use mean-squared error loss function
 
   def forward(self, x):
     return self.model(x)

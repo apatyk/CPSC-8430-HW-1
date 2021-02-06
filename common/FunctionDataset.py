@@ -1,5 +1,3 @@
-### HW 1-1: Deep vs. Shallow
-### Part 1: Simulate a function
 ### Adam Patyk
 ### CPSC 8430
 
