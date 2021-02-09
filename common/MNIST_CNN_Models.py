@@ -43,8 +43,8 @@ class _CNN(nn.Module):
   def test(self, data_loader):
     self.model.eval()
     testing_loss = 0.0
-    total = 0
     correct = 0
+    total = len(data_loader.dataset)
     
     with torch.no_grad():
       for data, target in data_loader:
@@ -52,10 +52,9 @@ class _CNN(nn.Module):
         loss = self.loss_function(output, target)
         testing_loss += loss.item()
         _, predicted = torch.max(output.data, 1)
-        total += target.size(0)
         correct += (predicted == target).sum().item()
-    testing_loss /= total
-    testing_acc = correct / total * 100
+    testing_loss /= len(data_loader)
+    testing_acc = correct / total * 100.0
 
     return testing_acc, testing_loss
 
