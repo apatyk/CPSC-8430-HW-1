@@ -192,6 +192,28 @@ class CNN100K(_CNN):
   def forward(self, x):
     return self.model(x)
 
+class CNN200K(_CNN):
+  def __init__(self):
+    super(CNN200K, self).__init__()
+    self.model = nn.Sequential(
+      nn.Conv2d(input_size, 64, kernel_size),
+      nn.MaxPool2d(pool_size, pool_size),
+      nn.ReLU(),
+      nn.Conv2d(64, 64, kernel_size),
+      nn.MaxPool2d(pool_size, pool_size),
+      nn.ReLU(),
+      nn.Flatten(),
+      nn.Linear(1600, 100),
+      nn.ReLU(),
+      nn.Linear(100, output_size)
+    )
+    self.optimizer = optim.SGD(self.model.parameters(), lr=learning_rate, momentum=momentum) # stochastic gradient descent
+    self.loss_function = nn.CrossEntropyLoss()   # cross entropy categorical loss function
+
+
+  def forward(self, x):
+    return self.model(x)
+
 class CNN500K(_CNN):
   def __init__(self):
     super(CNN500K, self).__init__()
@@ -225,9 +247,9 @@ class CNN1M(_CNN):
       nn.MaxPool2d(pool_size, pool_size),
       nn.ReLU(),
       nn.Flatten(),
-      nn.Linear(3200, 400),
+      nn.Linear(3200, 300),
       nn.ReLU(),
-      nn.Linear(400, output_size)
+      nn.Linear(300, output_size)
     )
     self.optimizer = optim.SGD(self.model.parameters(), lr=learning_rate, momentum=momentum) # stochastic gradient descent
     self.loss_function = nn.CrossEntropyLoss()   # cross entropy categorical loss function
@@ -258,9 +280,31 @@ class CNN2M(_CNN):
   def forward(self, x):
     return self.model(x)
 
-class CNN5M(_CNN):
+class CNN4M(_CNN):
   def __init__(self):
-    super(CNN5M, self).__init__()
+    super(CNN4M, self).__init__()
+    self.model = nn.Sequential(
+      nn.Conv2d(input_size, 256, kernel_size),
+      nn.MaxPool2d(pool_size, pool_size),
+      nn.ReLU(),
+      nn.Conv2d(256, 256, kernel_size),
+      nn.MaxPool2d(pool_size, pool_size),
+      nn.ReLU(),
+      nn.Flatten(),
+      nn.Linear(6400, 600),
+      nn.ReLU(),
+      nn.Linear(600, output_size)
+    )
+    self.optimizer = optim.SGD(self.model.parameters(), lr=learning_rate, momentum=momentum) # stochastic gradient descent
+    self.loss_function = nn.CrossEntropyLoss()   # cross entropy categorical loss function
+
+
+  def forward(self, x):
+    return self.model(x)
+
+class CNN6M(_CNN):
+  def __init__(self):
+    super(CNN6M, self).__init__()
     self.model = nn.Sequential(
       nn.Conv2d(input_size, 512, kernel_size),
       nn.MaxPool2d(pool_size, pool_size),
