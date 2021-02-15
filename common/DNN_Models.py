@@ -72,7 +72,7 @@ class ShallowNetwork(_DNN):
     return self.model(x)
 
 # Model 1
-# OrderedDict needed for layer names for HW2a
+# OrderedDict needed for layer names for HW1-2a
 class ModerateNetwork(_DNN):
   def __init__(self):
     super(ModerateNetwork, self).__init__()
