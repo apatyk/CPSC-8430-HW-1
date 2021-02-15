@@ -1,9 +1,12 @@
 ### Adam Patyk
 ### CPSC 8430
 
+import numpy as np
 import torch
 import torch.nn as nn
 import torch.optim as optim
+import torch.autograd as autograd
+from torch.autograd import Variable
 
 ## ---------------------------------------
 ## CNN Model Definitions for MNIST Dataset
@@ -39,6 +42,36 @@ class _CNN(nn.Module):
     training_loss /= len(data_loader)
 
     return training_loss
+
+  # training method to return loss and avg sensitivity across mini-batches
+  def extended_train(self, data_loader):   
+    self.model.train() 
+    training_loss = 0.0
+    overall_sensitivity = 0.0
+
+    for input, target in data_loader:
+      input.requires_grad = True
+      self.optimizer.zero_grad()
+      output = self.model(input)
+      loss = self.loss_function(output, target)
+      loss.backward(retain_graph=True)
+      self.optimizer.step()
+      training_loss += loss.item()
+
+      loss_grad_wrt_input = np.reshape(input.grad.data.numpy(), (-1, 28, 28))
+      # calculate sensitivity for each sample in mini-batch
+      batch_sensitivity = 0.0
+      for sample in range(len(loss_grad_wrt_input)):
+        # calculate Frobenius norm of grad
+        s = np.linalg.norm(loss_grad_wrt_input[sample], 'fro') 
+        batch_sensitivity += s
+      batch_sensitivity /= len(loss_grad_wrt_input)
+      overall_sensitivity += batch_sensitivity
+
+    training_loss /= len(data_loader)
+    overall_sensitivity /= len(data_loader)
+
+    return training_loss, overall_sensitivity
 
   def test(self, data_loader):
     self.model.eval()
@@ -91,6 +124,7 @@ class ModerateCNN(_CNN):
       nn.ReLU(),
       nn.Linear(fc_size, output_size)
     )
+    
     self.optimizer = optim.SGD(self.model.parameters(), lr=learning_rate, momentum=momentum) # stochastic gradient descent
     self.loss_function = nn.CrossEntropyLoss()   # cross entropy categorical loss function
 
