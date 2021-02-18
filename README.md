@@ -2,6 +2,7 @@
 ### Adam Patyk | Spring 2021
 
 ---
+#### Coded with PyTorch
 
 There is a Jupyter notebook for each separate problem on this assignment.
 
